@@ -8,7 +8,19 @@
 import Foundation
 import UIKit
 import SwiftUI
-import SwiftUIIntrospect
+@_spi(Advanced) import SwiftUIIntrospect
+
+public extension TextField {
+    func customKeyboard(view: @escaping (UITextDocumentProxy, CustomKeyboardBuilder.SubmitHandler?, CustomKeyboardBuilder.SystemFeedbackHandler?) -> some View) -> some View {
+        customKeyboard(CustomKeyboardBuilder(customKeyboardView: view))
+    }
+}
+
+public extension TextEditor {
+    func customKeyboard(view: @escaping (UITextDocumentProxy, CustomKeyboardBuilder.SubmitHandler?, CustomKeyboardBuilder.SystemFeedbackHandler?) -> some View) -> some View {
+        customKeyboard(CustomKeyboardBuilder(customKeyboardView: view))
+    }
+}
 
 public extension TextField {
     func customKeyboard(_ keyboardType: CustomKeyboard) -> some View {
@@ -37,7 +49,7 @@ public struct CustomKeyboardModifierTextEditor: ViewModifier {
             .onAppear {
                 keyboardType.onSubmit = onSubmit
             }
-            .introspect(.textEditor, on: .iOS(.v15AndAbove)) { uiTextView in
+            .introspect(.textEditor, on: .iOS(.v15...)) { uiTextView in
                 uiTextView.inputView = keyboardType.keyboardInputView
             }
     }
@@ -56,7 +68,7 @@ public struct CustomKeyboardModifierTextField: ViewModifier {
             .onAppear {
                 keyboardType.onSubmit = onSubmit
             }
-            .introspect(.textField, on: .iOS(.v15AndAbove)) { uiTextField in
+            .introspect(.textField, on: .iOS(.v15...)) { uiTextField in
                 uiTextField.inputView = keyboardType.keyboardInputView
             }
     }
